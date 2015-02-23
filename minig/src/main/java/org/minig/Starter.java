@@ -1,5 +1,7 @@
 package org.minig;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.io.File;
 
 import javax.servlet.ServletContext;
@@ -9,6 +11,7 @@ import org.minig.config.MvcConfig;
 import org.minig.config.ResourceConfig;
 import org.minig.config.SecurityConfig;
 import org.minig.config.ServiceConfig;
+import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
@@ -28,9 +31,13 @@ import org.springframework.web.servlet.DispatcherServlet;
 @Configuration
 public class Starter implements ServletContextInitializer {
 
+    private static final Logger LOG = getLogger(Starter.class);
+
     @Override
     public void onStartup(final ServletContext servletContext) throws ServletException {
-        servletContext.setAttribute(ServletContext.TEMPDIR, new File("tmp"));
+        final File tmpDir = new File("tmp");
+        LOG.info(String.format("temp directory: %s", tmpDir.getAbsolutePath()));
+        servletContext.setAttribute(ServletContext.TEMPDIR, tmpDir);
     }
 
     @Bean
