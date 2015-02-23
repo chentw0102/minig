@@ -5,10 +5,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
-
 import javax.servlet.ServletContext;
-
-import net.jawr.web.servlet.JawrSpringController;
 
 import org.minig.config.jawr.config.CssConfigPropertiesSource;
 import org.minig.config.jawr.config.JavascriptConfigPropertiesSource;
@@ -22,6 +19,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.ext.jsp.TaglibFactory;
 import freemarker.template.TemplateException;
+import net.jawr.web.servlet.JawrSpringController;
 
 /**
  * @author Stephane Nicoll
@@ -35,9 +33,9 @@ public class JawrConfig {
         simpleUrlHandlerMapping.setOrder(Integer.MAX_VALUE - 2);
         Properties p = new Properties();
 
+        p.setProperty("/binary/**", "jawrBinaryController");
         p.setProperty("/css/**", "jawrCssController");
         p.setProperty("/js/**", "jawrJavascriptController");
-        p.setProperty("/binary/**", "jawrBinaryController");
 
         simpleUrlHandlerMapping.setMappings(p);
 
