@@ -4,6 +4,7 @@ import org.minig.MailAuthentication;
 import org.minig.security.ApiAuthenticationEntryPoint;
 import org.minig.security.MailAuthenticationProvider;
 import org.minig.security.SecurityContextMailAuthentication;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.util.Assert;
 
 /**
  * @author Kamill Sokol
@@ -29,15 +31,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .eraseCredentials(false)
-                .authenticationProvider(authenticationProvider());
+            .eraseCredentials(false)
+            .authenticationProvider(authenticationProvider());
     }
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception  {
         webSecurity
-                .ignoring()
-                .antMatchers("/login", "/images/**", "/css/**", "/js/**", "/static/**");
+            .ignoring()
+            .antMatchers("/images/**", "/css/**", "/js/**", "/static/**");
     }
 
     @Order(1)
@@ -47,23 +49,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
             auth
-                    .eraseCredentials(false);
+                .eraseCredentials(false);
         }
 
         @Override
         public void configure(final HttpSecurity http) throws Exception {
             http
-                    .antMatcher("/api/**")
-                    .authorizeRequests().anyRequest().fullyAuthenticated()
-                    .and()
-                    .httpBasic().authenticationEntryPoint(new ApiAuthenticationEntryPoint())
-                    .and().csrf().disable();
+                .antMatcher("/api/**")
+                .authorizeRequests().anyRequest().fullyAuthenticated()
+                .and()
+                .httpBasic().authenticationEntryPoint(new ApiAuthenticationEntryPoint())
+                .and().csrf().disable();
         }
     }
 
     @Order(2)
     @Configuration
     public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+
+        private int sslRedirectPort;
+        private int serverPort;
 
         @Override
         protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
@@ -74,19 +79,39 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         public void configure(final HttpSecurity http) throws Exception {
             http
-                .antMatcher("/**")
-                .authorizeRequests().anyRequest().hasAnyRole("USER")
+                .antMatcher("/**");
+
+            if(sslRedirectPort > 0) {
+                http
+                    .requiresChannel().anyRequest().requiresSecure()
                     .and()
-                .formLogin()
+                    .portMapper().http(serverPort).mapsTo(sslRedirectPort);
+            }
+
+            http
+                .authorizeRequests().anyRequest().hasAnyRole("USER")
+                .and()
+                .formLogin().permitAll()
                 .loginPage("/login")
-                    .loginProcessingUrl("/check")
-                    .defaultSuccessUrl("/", true)
+                .loginProcessingUrl("/check")
+                .defaultSuccessUrl("/", true)
                 .failureUrl("/login?login=failed")
                 .and()
-                    .logout().logoutSuccessUrl("/login")
-                    .and()
-                    .csrf().disable()
-                    .authenticationProvider(authenticationProvider());
+                .logout().logoutSuccessUrl("/login")
+                .and()
+                .csrf().disable()
+                .authenticationProvider(authenticationProvider());
+        }
+
+        @Value("${minig.ssl.redirect.port:0}")
+        public void setSslRedirectPort(final int sslRedirectPort) {
+            this.sslRedirectPort = sslRedirectPort;
+        }
+
+        @Value("${server.port:0}")
+        public void setServerPort(final int serverPort) {
+            Assert.isTrue(serverPort > 0, "server port must be greater than 0");
+            this.serverPort = serverPort;
         }
     }
 
