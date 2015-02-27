@@ -1,10 +1,12 @@
-package org.minig.config.jawr.config;
+package org.minig.jawr;
 
 import java.util.Properties;
 
-import net.jawr.web.resource.bundle.factory.util.ConfigPropertiesSource;
-
+import org.minig.jawr.ClassPathResourceReader;
 import org.springframework.util.Assert;
+
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.bundle.factory.util.ConfigPropertiesSource;
 
 /**
  * @author Kamill Sokol
@@ -27,7 +29,7 @@ public class CommonConfigPropertiesSource implements ConfigPropertiesSource {
         properties.put("jawr.factory.use.orphans.mapper", "false");
         properties.put("jawr.css.postprocessor.base64ImageEncoder.encode.sprite", "true");
         properties.put("jawr.css.bundle." + id + ".filepostprocessors", "base64ImageEncoder");
-
+        properties.put(JawrConfig.JAWR_SERVLET_CTX_READER_CLASS, ClassPathResourceReader.class.getName());
         id("/bundles/" + id + "." + type.getType());
     }
 

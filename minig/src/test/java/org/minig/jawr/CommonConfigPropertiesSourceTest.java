@@ -1,14 +1,14 @@
-package org.minig.config.jawr.config;
+package org.minig.jawr;
 
 import org.junit.Test;
-import org.minig.config.jawr.config.CommonConfigPropertiesSource;
+import org.minig.jawr.CommonConfigPropertiesSource;
 
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-public class JavascriptConfigPropertiesSourceTest {
+public class CommonConfigPropertiesSourceTest {
 
     @Test
     public void test() {
