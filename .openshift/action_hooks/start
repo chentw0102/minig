@@ -1,3 +1,3 @@
 #!/bin/bash
 cd $OPENSHIFT_REPO_DIR/minig/target
-nohup java -server -jar minig.jar --server.context-path= --minig.ssl.redirect.port=443 --server.port=${OPENSHIFT_DIY_PORT} --server.address=${OPENSHIFT_DIY_IP} > ${OPENSHIFT_LOG_DIR}/nohup.out 2>&1 &
+nohup java -server -jar minig.jar --minig.ssl.redirect.port=443 --server.port=${OPENSHIFT_DIY_PORT} --server.address=${OPENSHIFT_DIY_IP} > ${OPENSHIFT_LOG_DIR}/nohup.out 2>&1 &
