@@ -2,7 +2,6 @@ package org.minig.jawr;
 
 import java.util.Properties;
 
-import org.minig.jawr.ClassPathResourceReader;
 import org.springframework.util.Assert;
 
 import net.jawr.web.config.JawrConfig;
@@ -30,6 +29,7 @@ public class CommonConfigPropertiesSource implements ConfigPropertiesSource {
         properties.put("jawr.css.postprocessor.base64ImageEncoder.encode.sprite", "true");
         properties.put("jawr.css.bundle." + id + ".filepostprocessors", "base64ImageEncoder");
         properties.put(JawrConfig.JAWR_SERVLET_CTX_READER_CLASS, ClassPathResourceReader.class.getName());
+        properties.put(JawrConfig.JAWR_BROWSER_RESOLVER, Jawr311BrowserResolver.class.getName());
         id("/bundles/" + id + "." + type.getType());
     }
 
