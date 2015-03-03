@@ -16,6 +16,8 @@
 		<version>1.2.2.RELEASE</version>
 	</parent>
 	<build>
+
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
